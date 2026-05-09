@@ -1,0 +1,171 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@xterm/xterm/css/xterm.css';
+
+/*
+ * Telemetry Theme — マゼンタアクセント (Mac 接続色) + 銀電飾 PIT
+ * V1: Mac 限定リリース、CC マゼンタ単色 + Type R 風 R
+ * V2: TikTok 風（白文字 + マゼンタ + シアンブレ）に切替
+ *
+ * Anchor: Telemetry_LogoColor_Anchor_Fragment_2026-05-08
+ *  - マゼンタ = Mac 接続
+ *  - シアン   = Linux 接続（V2 以降）
+ *  - 橙       = Win（CCPIT 本体、CCPIT-R では使わない）
+ *  - 銀電飾   = PIT 部分（ファミリ共通）
+ */
+
+/* --- Light theme --- */
+:root {
+  --background: hsl(310 12% 96%);
+  --foreground: hsl(310 10% 12%);
+  --card: hsl(310 10% 93%);
+  --card-foreground: hsl(310 10% 12%);
+  --popover: hsl(310 10% 93%);
+  --popover-foreground: hsl(310 10% 12%);
+  --primary: hsl(310 65% 50%);
+  --primary-foreground: hsl(310 10% 98%);
+  --secondary: hsl(310 8% 88%);
+  --secondary-foreground: hsl(310 10% 22%);
+  --muted: hsl(310 6% 90%);
+  --muted-foreground: hsl(310 6% 46%);
+  --accent: hsl(310 10% 88%);
+  --accent-foreground: hsl(310 10% 22%);
+  --destructive: hsl(0 72% 51%);
+  --border: hsl(310 8% 82%);
+  --input: hsl(310 8% 82%);
+  --ring: hsl(310 65% 50%);
+  --radius: 0.5rem;
+  --sidebar: hsl(310 10% 91%);
+  --sidebar-foreground: hsl(310 10% 12%);
+  --sidebar-border: hsl(310 8% 82%);
+  --sidebar-active: hsl(310 12% 84%);
+  --sidebar-hover: hsl(310 12% 87%);
+  --statusbar: hsl(310 10% 88%);
+  --statusbar-foreground: hsl(310 6% 46%);
+  --magenta: hsl(310 65% 55%);
+  --magenta-fg: hsl(310 10% 98%);
+  --silver: hsl(0 0% 75%);
+  --silver-fg: hsl(0 0% 15%);
+}
+
+/* --- Dark theme (default) --- */
+.dark,
+:root {
+  --background: hsl(310 10% 12%);
+  --foreground: hsl(310 8% 92%);
+  --card: hsl(310 10% 16%);
+  --card-foreground: hsl(310 8% 92%);
+  --popover: hsl(310 10% 16%);
+  --popover-foreground: hsl(310 8% 92%);
+  --primary: hsl(310 65% 65%);
+  --primary-foreground: hsl(310 10% 10%);
+  --secondary: hsl(310 8% 22%);
+  --secondary-foreground: hsl(310 8% 90%);
+  --muted: hsl(310 8% 22%);
+  --muted-foreground: hsl(310 6% 60%);
+  --accent: hsl(310 12% 26%);
+  --accent-foreground: hsl(310 8% 92%);
+  --destructive: hsl(0 72% 51%);
+  --border: hsl(310 8% 26%);
+  --input: hsl(310 8% 26%);
+  --ring: hsl(310 65% 65%);
+  --sidebar: hsl(310 10% 10%);
+  --sidebar-foreground: hsl(310 8% 92%);
+  --sidebar-border: hsl(310 8% 26%);
+  --sidebar-active: hsl(310 12% 22%);
+  --sidebar-hover: hsl(310 12% 18%);
+  --statusbar: hsl(310 10% 14%);
+  --statusbar-foreground: hsl(310 6% 60%);
+  --magenta: hsl(310 65% 65%);
+  --magenta-fg: hsl(310 10% 10%);
+  --silver: hsl(0 0% 65%);
+  --silver-fg: hsl(0 0% 95%);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-active: var(--sidebar-active);
+  --color-sidebar-hover: var(--sidebar-hover);
+  --color-statusbar: var(--statusbar);
+  --color-statusbar-foreground: var(--statusbar-foreground);
+  --color-magenta: var(--magenta);
+  --color-magenta-fg: var(--magenta-fg);
+  --color-silver: var(--silver);
+  --color-silver-fg: var(--silver-fg);
+  --radius: var(--radius);
+}
+
+* {
+  border-color: var(--border);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
+}
+
+/* xterm container - dark theme aligned */
+.xterm-container {
+  background: hsl(310 10% 8%);
+  padding: 8px;
+  height: 100%;
+}
+
+/* Type R 風 R エンブレム（テキストレンダリング）。
+   Phase 1 は SVG 不在で文字 R をボールド + マゼンタ + slight italic で再現。 */
+.r-emblem {
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.05em;
+  background: linear-gradient(
+    135deg,
+    hsl(310 65% 65%) 0%,
+    hsl(310 75% 50%) 50%,
+    hsl(310 65% 35%) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 1px hsl(310 65% 50% / 0.3);
+}
+
+/* PIT 部分の銀電飾効果 */
+.pit-emblem {
+  font-weight: 700;
+  background: linear-gradient(180deg, hsl(0 0% 90%) 0%, hsl(0 0% 70%) 50%, hsl(0 0% 60%) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* CC マゼンタ単色 */
+.cc-emblem {
+  font-weight: 900;
+  color: var(--magenta);
+}

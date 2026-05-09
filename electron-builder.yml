@@ -1,0 +1,38 @@
+appId: com.vtriot.ccpit-r
+productName: CCPIT-R
+copyright: Copyright © 2026 VTRiot
+directories:
+  buildResources: build
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md,CONTRIBUTING.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - '!_spike/**/*'
+asarUnpack:
+  - '**/node_modules/ssh2/**/*'
+  - '**/node_modules/cpu-features/**/*'
+  - '**/node_modules/keytar/**/*'
+win:
+  executableName: CCPIT-R
+  icon: build/icon.ico
+nsis:
+  artifactName: CCPIT-R-Setup-${version}.${ext}
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  installerLanguages:
+    - en_US
+    - ja_JP
+  displayLanguageSelector: true
+  deleteAppDataOnUninstall: false
+  runAfterFinish: true
+npmRebuild: false

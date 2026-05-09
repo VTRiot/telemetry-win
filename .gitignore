@@ -1,0 +1,14 @@
+node_modules
+dist
+out
+.DS_Store
+.eslintcache
+*.log*
+
+# Editor / tool backup files
+*.bak
+*.bak2
+*.bak.*
+
+# Phase A 検証スパイク（破棄しやすい、コミットしない）
+_spike/
