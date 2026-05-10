@@ -15,6 +15,11 @@ asarUnpack:
   - '**/node_modules/ssh2/**/*'
   - '**/node_modules/cpu-features/**/*'
   - '**/node_modules/keytar/**/*'
+extraResources:
+  - from: resources/splash.html
+    to: splash.html
+  - from: resources/CCPIT-R_V1.png
+    to: CCPIT-R_V1.png
 win:
   executableName: CCPIT-R
   icon: build/icon.ico

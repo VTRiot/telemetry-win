@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>CCPIT-R</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #0a0508;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif;
+        -webkit-app-region: drag;
+        overflow: hidden;
+      }
+      .logo {
+        width: 90%;
+        height: auto;
+        margin-bottom: 14px;
+        animation: fadeIn 0.6s ease-out;
+      }
+      .subtitle {
+        color: rgba(217, 107, 196, 0.6);
+        font-size: 9px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        animation: fadeIn 0.8s ease-out;
+      }
+      .loading {
+        color: rgba(217, 107, 196, 0.7);
+        font-size: 11px;
+        letter-spacing: 2px;
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.4;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <img class="logo" src="CCPIT-R_V1.png" alt="CCPIT-R" />
+    <div class="subtitle">Remote Operator</div>
+    <div class="loading">Loading…</div>
+  </body>
+</html>

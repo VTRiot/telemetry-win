@@ -40,3 +40,11 @@ export const STORE_KEY_CONNECTIONS = 'connections'
 // Phase 1 制約: 接続数 1, multi-PTY 不可
 export const MAX_CONNECTIONS_PHASE1 = 1
 export const MAX_CONCURRENT_PTY_SESSIONS = 1
+
+// Splash window 設定 (v1.0.2 で追加)。CCPIT (sibling Win app) の仕組みを最小抽出、appConfig 依存除去。
+// 540×234 はソース画像 1905×825 の比率 (≈ 2.31:1) を保持した縮小値。
+export const SPLASH_WIDTH = 540
+export const SPLASH_HEIGHT = 234
+// 最低表示時間。main の load が早く完了しても、この時間は splash を見せる
+// （ロゴ視認性確保 + 起動感の演出）。Phase 2 で演出ロジック検討候補。
+export const SPLASH_MIN_DURATION_MS = 1500

@@ -5,8 +5,34 @@ import icon from '../../resources/icon.png?asset'
 import { registerIpcHandlers } from './ipc'
 import { closeAllClients } from './services/sshClient'
 import { closeAllPty } from './services/ptySession'
+import { SPLASH_HEIGHT, SPLASH_MIN_DURATION_MS, SPLASH_WIDTH } from './services/constants'
 
-function createWindow(): BrowserWindow {
+function getSplashHtmlPath(): string {
+  if (is.dev) {
+    return join(__dirname, '../../resources/splash.html')
+  }
+  return join(process.resourcesPath, 'splash.html')
+}
+
+function createSplashWindow(): BrowserWindow {
+  const splash = new BrowserWindow({
+    width: SPLASH_WIDTH,
+    height: SPLASH_HEIGHT,
+    frame: false,
+    transparent: false,
+    alwaysOnTop: true,
+    resizable: false,
+    center: true,
+    icon,
+    webPreferences: {
+      sandbox: true
+    }
+  })
+  splash.loadFile(getSplashHtmlPath())
+  return splash
+}
+
+function createMainWindow(splash: BrowserWindow, splashStart: number): BrowserWindow {
   const win = new BrowserWindow({
     title: 'CCPIT-R — Remote Operator',
     width: 1200,
@@ -22,7 +48,12 @@ function createWindow(): BrowserWindow {
   })
 
   win.on('ready-to-show', () => {
-    win.show()
+    const elapsed = Date.now() - splashStart
+    const remaining = Math.max(0, SPLASH_MIN_DURATION_MS - elapsed)
+    setTimeout(() => {
+      if (!splash.isDestroyed()) splash.destroy()
+      win.show()
+    }, remaining)
   })
 
   win.webContents.setWindowOpenHandler((details) => {
@@ -48,10 +79,16 @@ app.whenReady().then(() => {
 
   registerIpcHandlers()
 
-  createWindow()
+  // Splash → Main の起動フロー (v1.0.2 で導入、CCPIT パターン最小抽出、appConfig 依存除去)
+  const splash = createSplashWindow()
+  const splashStart = Date.now()
+  createMainWindow(splash, splashStart)
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      const s = createSplashWindow()
+      createMainWindow(s, Date.now())
+    }
   })
 })
 
