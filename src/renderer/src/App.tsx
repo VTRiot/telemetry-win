@@ -11,11 +11,30 @@ export default function App(): JSX.Element {
   const [projects, setProjects] = useState<RemoteProject[]>([])
   const [activePjPath, setActivePjPath] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [bootError, setBootError] = useState<string | null>(null)
   const [appVersion, setAppVersion] = useState<string>('?')
 
   useEffect(() => {
-    void window.api.getAppVersion().then(setAppVersion)
-    void window.api.connectionList().then(setConnections)
+    // version 取得失敗は致命的でないため、表示は '?' のままで継続
+    void window.api
+      .getAppVersion()
+      .then(setAppVersion)
+      .catch(() => undefined)
+
+    // connectionList の reject はサイレント固着の主因。
+    // .catch() で UI に surface する（v1.0.0 → v1.0.1 改修、260510_1706 調査報告 §6 副次弱点）
+    void window.api
+      .connectionList()
+      .then(setConnections)
+      .catch((e: unknown) => {
+        const msg = e instanceof Error ? e.message : String(e)
+        setBootError(msg)
+        // Loading から脱出させ、ErrorPanel に分岐させる。
+        // 注: connections === [] は「成功 0 件」と意味的に重複する設計トレードオフを承知の上で、
+        // bootError !== null の分岐を上位に置くことで UI 表示は明確に分離される
+        // （Phase 2 で state machine 整理候補、本修正のスコープ外）
+        setConnections([])
+      })
   }, [])
 
   const handleWizardComplete = async (conn: Connection): Promise<void> => {
@@ -50,6 +69,11 @@ export default function App(): JSX.Element {
     setActiveConnId(null)
     setProjects([])
     setActivePjPath(null)
+  }
+
+  // 起動時のブート失敗（IPC reject 等）。Loading… で固着させず、UI に surface する。
+  if (bootError !== null) {
+    return <BootErrorPanel message={bootError} onRetry={() => location.reload()} />
   }
 
   // 起動直後: connection list 取得待ち
@@ -117,6 +141,38 @@ export default function App(): JSX.Element {
           </div>
         )}
       </main>
+    </div>
+  )
+}
+
+// 起動失敗時のエラー画面。Phase 1 は最小実装。
+// Phase 2 でリッチ化（スタックトレース表示、ログを開く、診断モード等）。
+function BootErrorPanel({
+  message,
+  onRetry
+}: {
+  message: string
+  onRetry: () => void
+}): JSX.Element {
+  return (
+    <div className="flex h-full items-center justify-center bg-[var(--background)] p-8">
+      <div className="max-w-2xl rounded-lg border border-[var(--destructive)] bg-[var(--destructive)]/10 p-6">
+        <h2 className="mb-2 text-lg font-semibold text-[var(--destructive)]">
+          ⚠ 起動に失敗しました
+        </h2>
+        <p className="mb-3 text-sm text-[var(--foreground)]">
+          接続情報の読み込み中にエラーが発生しました。アプリの再起動をお試しください。
+        </p>
+        <pre className="mb-4 max-h-40 overflow-auto rounded bg-[var(--card)] p-3 text-xs text-[var(--muted-foreground)]">
+          {message}
+        </pre>
+        <button
+          onClick={onRetry}
+          className="rounded bg-[var(--magenta)] px-4 py-2 text-sm font-medium text-[var(--magenta-fg)] hover:opacity-90"
+        >
+          再試行（リロード）
+        </button>
+      </div>
     </div>
   )
 }
