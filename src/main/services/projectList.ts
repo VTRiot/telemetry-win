@@ -30,13 +30,23 @@ export function deriveDisplayNameFromSlug(slug: string): string {
   return idx === -1 ? slug : slug.slice(idx + 1)
 }
 
-interface JsonlFirstRecord {
-  cwd?: string
-  type?: string
+interface JsonlRecord {
+  cwd?: unknown
+  type?: unknown
 }
 
+// jsonl 先頭付近を line スキャンして cwd を持つ最初の record を採用する。
+// v1.0.0 → v1.0.2 の実装は最初の line のみ JSON.parse していたが、
+// 実機の jsonl では先頭 line が `{"type":"permission-mode"}` などの
+// メタ record で `cwd` を持たないケースがあり (hrd-mac01 で実測、2026-05-11)、
+// 全 PJ で fallback 経路に入って pjPath = slug → `cd '-Users-...'` 失敗
+// の致命バグになっていた。複数行スキャン化で解消。
+//
+// 読込チャンクは 16 KB (旧 8 KB から拡大)。1 record ≒ 200〜500 B 想定で
+// 30〜80 record スキャン余裕、cwd を持つ record が先頭付近に必ず存在する想定。
+const READ_CHUNK_BYTES = 16384
+
 async function readPjCwd(sftp: SFTPWrapper, slugDir: string): Promise<string | undefined> {
-  // slugDir 配下の .jsonl で最も atime が新しい 1 件の最初の行を読む
   const entries = await new Promise<FileEntry[]>((resolve, reject) => {
     sftp.readdir(slugDir, (err, list) => {
       if (err) return reject(err)
@@ -49,16 +59,22 @@ async function readPjCwd(sftp: SFTPWrapper, slugDir: string): Promise<string | u
   if (jsonls.length === 0) return undefined
 
   const targetPath = `${slugDir}/${jsonls[0].filename}`
-  const text = await readFirstChunk(sftp, targetPath, 8192)
-  const firstNewline = text.indexOf('\n')
-  const firstLine = firstNewline === -1 ? text : text.slice(0, firstNewline)
-  if (!firstLine.trim()) return undefined
-  try {
-    const record = JSON.parse(firstLine) as JsonlFirstRecord
-    return record.cwd
-  } catch {
-    return undefined
+  const text = await readFirstChunk(sftp, targetPath, READ_CHUNK_BYTES)
+
+  for (const line of text.split('\n')) {
+    if (!line.trim()) continue
+    let record: JsonlRecord
+    try {
+      record = JSON.parse(line) as JsonlRecord
+    } catch {
+      // 先頭 16 KB の最後が truncated line になっている場合などは無視して続行
+      continue
+    }
+    if (typeof record.cwd === 'string' && record.cwd.startsWith('/')) {
+      return record.cwd
+    }
   }
+  return undefined
 }
 
 function readFirstChunk(sftp: SFTPWrapper, path: string, byteLimit: number): Promise<string> {

@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.3] — 2026-05-11
+
+### Fixed
+
+- **【致命】PJ 起動時に cwd が PJ ディレクトリではなくホーム (`/Users/raio`) になっていたバグ**
+  - 症状: PJ クリック後、CC が `/Users/raio` で起動。CC 側で「Quick safety check: Is this a project you created or one you trust?」が出る (cwd が PJ じゃないため CC が警告)
+  - 根因: `readPjCwd()` が jsonl の **最初の line のみ** JSON.parse していたが、新形式の CC ログでは先頭が `{"type":"permission-mode"}` 等のメタ record で `cwd` フィールドを持たない (実機 hrd-mac01 で実測、2026-05-11)。全 PJ で fallback 経路に入り `pjPath = slug` (`-Users-raio--Prog-mbp-setup`) → `cd '-Users-...' && claude` 失敗 → cwd=Home で claude 起動
+  - 対応: `readPjCwd()` を **複数行スキャン化**。先頭 16 KB を line ごとに JSON.parse、`cwd` (絶対 POSIX path) を持つ最初の record を採用
+  - 補強: `CLAUDE_LAUNCH_COMMAND` に絶対パス guard 追加 (`pjPath.startsWith('/')` 違反で throw、debug-toolkit 型 7 多層防御)
+  - 補強: `PtyPane` で pjPath 未解決 (slug のまま) を検出した場合、PTY を起動せず `UnresolvedPathPanel` でエラー UI を描画 (silent failure 回避、v1.0.1 `BootErrorPanel` と同パターン)
+
+### Changed
+
+- **右ペインタイトル**: slug 生表示 (`-Users-raio--Prog-mbp-setup`) を廃止。**displayName 主タイトル + pjPath サブ**の 2 行構造に変更 (例: `mbp-setup` / `/Users/raio/_Prog/mbp-setup`)
+- **タイトルバー左上アイコン**: 旧 CCPIT 本体 (橙) のままだった `resources/icon.png` を CCPIT-R マゼンタ版 256×256 に差し替え (Pillow リサイズ)。v1.0.2 で .ico は更新済だったが BrowserWindow.icon の参照は未更新だった残課題を解消
+
+### Added
+
+- 新規ユニットテスト `launchCommand.test.ts` 3 件 (絶対パス OK / slug reject / quote escape)。debug-toolkit 型 7「負の不変条件はテストで明示」最小適用
+
+### Notes
+
+- 機能変更なし、Phase 1 中核機能 (ワンクリックで `cd && claude`) の復旧
+- v1.0.2 から **強く更新推奨** (PJ 起動が事実上機能していなかったため)
+- インストーラは引き続き **未署名** (v1.0.0〜v1.0.3 同じ、v1.1 で対応予定)
+
+---
+
 ## [1.0.2] — 2026-05-10
 
 ### Changed
@@ -76,6 +104,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Terminal: `@xterm/xterm` + `@xterm/addon-fit`
 - Persist: `electron-store` v10 → ⚠ v1.0.1 で v8 にダウングレード
 
+[1.0.3]: https://github.com/VTRiot/telemetry-win/releases/tag/v1.0.3
 [1.0.2]: https://github.com/VTRiot/telemetry-win/releases/tag/v1.0.2
 [1.0.1]: https://github.com/VTRiot/telemetry-win/releases/tag/v1.0.1
 [1.0.0]: https://github.com/VTRiot/telemetry-win/releases/tag/v1.0.0

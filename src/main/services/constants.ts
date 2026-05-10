@@ -23,7 +23,18 @@ export const PTY_DEFAULT_ENV: Record<string, string> = {
 // ~/.zshrc が読まれて PATH に /opt/homebrew/bin（A-1-5 で実測）が入る。
 // 単純に `cd <pj> && claude` で起動する。
 // シングルクォートのエスケープは POSIX 流儀（'\'' で閉じて `'` を出して再開）。
+//
+// v1.0.3 で絶対パス guard 追加 (debug-toolkit 型 7 多層防御):
+// pjPath が `/` 始まりでない場合は throw。これは projectList.ts の
+// fallback 経路で slug (`-Users-...`) がそのまま渡る v1.0.2 致命バグの保険。
+// 主因は readPjCwd の line スキャン化で潰すが、IPC handler で contract
+// 違反を顕在化させて silent failure を防ぐ。
 export const CLAUDE_LAUNCH_COMMAND = (pjPath: string): string => {
+  if (!pjPath.startsWith('/')) {
+    throw new Error(
+      `CLAUDE_LAUNCH_COMMAND: pjPath must be an absolute POSIX path (starts with '/'), got: ${JSON.stringify(pjPath)}`
+    )
+  }
   const escaped = pjPath.replace(/'/g, `'\\''`)
   return `cd '${escaped}' && claude`
 }

@@ -58,6 +58,9 @@ export function ProjectsLayout({
             key={`${connection.id}:${activePjPath}`}
             connId={connection.id}
             pjPath={activePjPath}
+            displayName={
+              projects.find((pj) => pj.pjPath === activePjPath)?.displayName ?? activePjPath
+            }
           />
         ) : (
           <div className="flex h-full items-center justify-center text-[var(--muted-foreground)]">
