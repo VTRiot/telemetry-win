@@ -1,7 +1,7 @@
-{
+﻿{
   "name": "telemetry-win",
   "version": "1.0.3",
-  "description": "CCPIT-R (Telemetry) — Remote SSH operator for Claude Code on macOS",
+  "description": "CCPIT-R — Remote SSH operator for Claude Code on macOS",
   "main": "./out/main/index.js",
   "author": {
     "name": "VTRiot",

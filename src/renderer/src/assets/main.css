@@ -1,9 +1,9 @@
-@import 'tailwindcss';
+﻿@import 'tailwindcss';
 @import 'tw-animate-css';
 @import '@xterm/xterm/css/xterm.css';
 
 /*
- * Telemetry Theme — マゼンタアクセント (Mac 接続色) + 銀電飾 PIT
+ * CCPIT-R Theme — マゼンタアクセント (Mac 接続色) + 銀電飾 PIT
  * V1: Mac 限定リリース、CC マゼンタ単色 + Type R 風 R
  * V2: TikTok 風（白文字 + マゼンタ + シアンブレ）に切替
  *

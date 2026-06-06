@@ -1,4 +1,4 @@
-// Telemetry main プロセス側定数
+﻿// CCPIT-R main プロセス側定数
 // マジックナンバー禁止規範に従い、SSH/PTY/UI 等の値を一元管理する
 
 export const SSH_DEFAULT_PORT = 22
@@ -52,7 +52,7 @@ export const STORE_KEY_CONNECTIONS = 'connections'
 export const MAX_CONNECTIONS_PHASE1 = 1
 export const MAX_CONCURRENT_PTY_SESSIONS = 1
 
-// Splash window 設定 (v1.0.2 で追加)。CCPIT (sibling Win app) の仕組みを最小抽出、appConfig 依存除去。
+// Splash window 設定 (v1.0.2 で追加)。既知の splash 仕組みを最小抽出、appConfig 依存除去。
 // 540×234 はソース画像 1905×825 の比率 (≈ 2.31:1) を保持した縮小値。
 export const SPLASH_WIDTH = 540
 export const SPLASH_HEIGHT = 234

@@ -41,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **アプリアイコンを CCPIT-R 専用ブランド画像に置換**
   - 旧: CCPIT 本体（CC=橙）流用
-  - 新: マゼンタ系 CCPIT-R 公式ロゴ（らいお生成）
+  - 新: マゼンタ系 CCPIT-R 公式ロゴ
   - `build/icon.ico` をマルチサイズ（256/128/64/48/32/16）で再生成（Pillow 12.1.0）
   - インストーラ Setup.exe / インストール後の exe / タスクバー / スタートメニューすべて新アイコンに切り替わる
   - 透過化は今回見送り（PIT 銀電飾の影破綻リスク、Phase 2 で別途検討）
@@ -52,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 起動時の「アプリが起動したか分からない」初期 UX 不確実性を解消
   - `resources/splash.html` + `resources/CCPIT-R_V1.png` を `extraResources` 経由で配信
   - main プロセスで `createSplashWindow()` → `mainWindow.on('ready-to-show')` で残時間待ち → `splash.destroy() + main.show()`
-  - CCPIT (sibling Win app) の splash 仕組みを最小抽出（`splashRareChance` 演出 / `appConfig` 依存は持ち込まず）
+  - 既知の splash 仕組みを最小抽出（`splashRareChance` 演出 / `appConfig` 依存は持ち込まず）
 
 ### Notes
 

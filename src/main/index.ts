@@ -79,7 +79,7 @@ app.whenReady().then(() => {
 
   registerIpcHandlers()
 
-  // Splash → Main の起動フロー (v1.0.2 で導入、CCPIT パターン最小抽出、appConfig 依存除去)
+  // Splash → Main の起動フロー (v1.0.2 で導入、既知の splash パターン最小抽出、appConfig 依存除去)
   const splash = createSplashWindow()
   const splashStart = Date.now()
   createMainWindow(splash, splashStart)

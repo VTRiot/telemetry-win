@@ -79,8 +79,8 @@ export async function openPty(
   })
 
   // 起動コマンド送信（cd → exec zsh -i）。zsh -i 起動後 claude を打つのは
-  // らいおの判断（Phase 1 はワンクリック起動 = ディレクトリ移動 + interactive shell まで）。
-  // らいおが claude を打って起動する経路と、自動で claude を打つ経路の両方を提供する。
+  // 設計方針（Phase 1 はワンクリック起動 = ディレクトリ移動 + interactive shell まで）。
+  // ユーザーが claude を打って起動する経路と、自動で claude を打つ経路の両方を提供する。
   // V1.0.0 ではディレクトリ移動 + claude 起動の auto fire をデフォルトとする。
   channel.write(CLAUDE_LAUNCH_COMMAND(args.pjPath) + '\n')
 
